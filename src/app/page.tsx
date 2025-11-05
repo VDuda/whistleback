@@ -104,7 +104,13 @@ export default function Home() {
                 <p className="text-xs text-gray-400 -mt-1">Decentralized Bounty Marketplace</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              <Link
+                href="/how-it-works"
+                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
+              >
+                How It Works
+              </Link>
               <Link
                 href="https://dorahacks.io/hackathon/legal-hack/detail"
                 target="_blank"

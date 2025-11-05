@@ -31,6 +31,9 @@ export interface Lawyer {
   rating: number;
   casesWon: number;
   specialization: string;
+  bio?: string;
+  barAdmissions?: string[];
+  notableCases?: string[];
 }
 
 export interface NarrativeToken {
