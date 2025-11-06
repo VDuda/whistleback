@@ -158,9 +158,9 @@ export default function Home() {
             </div>
             <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-yellow-500/30 transition-all duration-300 group">
               <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                $7T
+                $688B
               </div>
-              <div className="text-gray-400 text-sm">Tax Gap</div>
+              <div className="text-gray-400 text-sm">Annual Tax Gap</div>
             </div>
           </div>
         </div>
