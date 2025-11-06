@@ -86,10 +86,9 @@ async function getStoryClient() {
     }
 
     try {
-      // Dynamic import to prevent webpack from bundling at compile time
-      // Use eval to bypass webpack's static analysis
-      const dynamicImport = eval('import');
-      const realModule = await dynamicImport('./story-protocol-real');
+      // Dynamic import - webpack may bundle this but that's OK
+      // The real client will fail gracefully if dependencies are missing
+      const realModule = await import('./story-protocol-real');
       const { RealStoryClient } = realModule;
 
       if (!RealStoryClient) {
@@ -100,8 +99,9 @@ async function getStoryClient() {
       return new RealStoryClient();
     } catch (error) {
       console.error('❌ Real Story Protocol client not available');
+      console.error('   Error:', error?.message || error);
       console.error('   Install: pnpm install @story-protocol/core-sdk viem');
-      console.error('   Or set STORY_MODE=mock to use mock client');
+      console.error('   Or set slider to Mock mode');
       console.log('🎭 Falling back to MOCK Story Protocol integration');
       return new MockStoryClient();
     }
