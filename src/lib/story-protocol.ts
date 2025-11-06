@@ -3,12 +3,20 @@
 
 import { NarrativeToken } from '@/types';
 
-// Simulated Story Protocol operations
-export class StoryClient {
+// Singleton pattern for mock client to persist tokens across requests
+class MockStoryClient {
+  private static instance: MockStoryClient;
   private tokens: Map<string, NarrativeToken> = new Map();
 
-  constructor() {
+  private constructor() {
     console.log('Initializing Story Protocol client (Mock)');
+  }
+
+  static getInstance(): MockStoryClient {
+    if (!MockStoryClient.instance) {
+      MockStoryClient.instance = new MockStoryClient();
+    }
+    return MockStoryClient.instance;
   }
 
   async mintNarrative(shardHash: string, poolId: string, metadata: any, owner: string): Promise<string> {
@@ -28,6 +36,7 @@ export class StoryClient {
     };
 
     this.tokens.set(tokenId, token);
+    console.log(`✅ Mock token minted: ${tokenId} for pool ${poolId}`);
     return tokenId;
   }
 
@@ -43,6 +52,11 @@ export class StoryClient {
   async getToken(tokenId: string): Promise<NarrativeToken | null> {
     await new Promise(resolve => setTimeout(resolve, 200));
     return this.tokens.get(tokenId) || null;
+  }
+
+  async getAllTokens(): Promise<NarrativeToken[]> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return Array.from(this.tokens.values());
   }
 
   async getTokenRoyalties(tokenId: string): Promise<number> {
@@ -83,4 +97,5 @@ export class StoryClient {
   }
 }
 
-export const storyClient = new StoryClient();
+export const StoryClient = MockStoryClient;
+export const storyClient = MockStoryClient.getInstance();

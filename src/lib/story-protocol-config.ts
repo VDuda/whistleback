@@ -82,7 +82,7 @@ async function getStoryClient() {
         // Fall through to mock
       }
       console.log('🎭 Using MOCK Story Protocol integration (server-side)');
-      return new MockStoryClient();
+      return MockStoryClient.getInstance();
     }
 
     try {
@@ -103,12 +103,44 @@ async function getStoryClient() {
       console.error('   Install: pnpm install @story-protocol/core-sdk viem');
       console.error('   Or set slider to Mock mode');
       console.log('🎭 Falling back to MOCK Story Protocol integration');
-      return new MockStoryClient();
+      return MockStoryClient.getInstance();
     }
   } else {
     console.log('🎭 Using MOCK Story Protocol integration');
-    return new MockStoryClient();
+    return MockStoryClient.getInstance();
   }
+}
+
+/**
+ * Get Story client with specific mode (for API routes)
+ * This allows the server to use the mode specified by the client
+ */
+async function getStoryClientWithMode(mode: 'mock' | 'real') {
+  if (mode === 'real') {
+    // Server-side: check if real client can be loaded
+    if (typeof window === 'undefined') {
+      try {
+        const realModule = await import('./story-protocol-real');
+        const RealStoryClient = realModule.RealStoryClient;
+        if (RealStoryClient) {
+          console.log('🚀 Using REAL Story Protocol TestNet integration (API route)');
+          return new RealStoryClient();
+        }
+      } catch (error) {
+        console.error('❌ Failed to initialize real Story Protocol client:', error);
+        console.log('🎭 Falling back to MOCK Story Protocol integration');
+        return MockStoryClient.getInstance();
+      }
+    }
+  }
+
+  console.log('🎭 Using MOCK Story Protocol integration');
+  return MockStoryClient.getInstance();
+}
+
+// Export function for API routes (accepts mode parameter)
+export async function getStoryClientForApi(mode: 'mock' | 'real') {
+  return getStoryClientWithMode(mode);
 }
 
 // Export a lazy-loaded singleton instance

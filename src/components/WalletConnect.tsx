@@ -12,6 +12,9 @@ export function WalletConnect() {
         <div className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm font-medium border border-green-500/30">
           Connected
         </div>
+        <div className="px-3 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-medium border border-blue-500/30">
+          Story Aeneid
+        </div>
         <div className="text-sm text-gray-400 font-mono">
           {address?.slice(0, 6)}...{address?.slice(-4)}
         </div>

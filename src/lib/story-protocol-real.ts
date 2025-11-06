@@ -12,19 +12,23 @@
  */
 
 // Dynamic imports to prevent webpack bundling
-let viem: any = null;
-let storyProtocol: any = null;
+let viemModule: any = null;
+let storyProtocolModule: any = null;
 
-function loadDependencies() {
-  if (!viem || !storyProtocol) {
+async function loadDependencies() {
+  if (!viemModule || !storyProtocolModule) {
     try {
-      viem = require('viem');
-      storyProtocol = require('@story-protocol/core-sdk');
+      const [viem, storyProtocol] = await Promise.all([
+        import('viem'),
+        import('@story-protocol/core-sdk')
+      ]);
+      viemModule = viem;
+      storyProtocolModule = storyProtocol;
     } catch (error) {
       throw new Error('Story Protocol SDK not installed. Run: pnpm install @story-protocol/core-sdk viem');
     }
   }
-  return { viem, storyProtocol };
+  return { viem: viemModule, storyProtocol: storyProtocolModule };
 }
 
 import type { NarrativeToken } from '@/types';
@@ -32,7 +36,7 @@ import type { NarrativeToken } from '@/types';
 // Story Protocol TestNet configuration
 const STORY_CONFIG = {
   chainId: 1315, // Aeneid TestNet
-  rpcUrl: process.env.STORY_RPC_URL || 'https://odyssey.storyrpc.io/',
+  rpcUrl: process.env.STORY_RPC_URL || 'https://aeneid.storyrpc.io/',
   // Add your private key - NEVER commit this!
   privateKey: process.env.STORY_PRIVATE_KEY,
 };
@@ -60,16 +64,11 @@ export class RealStoryClient {
   private config: any = null;
 
   constructor() {
-    // Load dependencies dynamically
-    const { viem, storyProtocol } = loadDependencies();
-    const { createPublicClient, createWalletClient, http } = viem;
-    const { StoryClient, StoryNetwork } = storyProtocol;
-
     // Configuration
     this.config = {
       privateKey: process.env.STORY_PRIVATE_KEY,
       chainId: parseInt(process.env.STORY_CHAIN_ID || '1315'),
-      rpcUrl: process.env.STORY_RPC_URL || 'https://odyssey.storyrpc.io/',
+      rpcUrl: process.env.STORY_RPC_URL || 'https://aeneid.storyrpc.io/',
       contracts: {
         ipAssetRegistry: process.env.STORY_IP_ASSET_REGISTRY || '0x77319B4031e6eF1250907aa00018B8B1c67a244b',
         licensingModule: process.env.STORY_LICENSING_MODULE || '0x04fbd8a2e56dd85CFD5500A4A4DfA955B9f1dE6f',
@@ -91,30 +90,64 @@ export class RealStoryClient {
       return;
     }
 
-    // Initialize viem clients
-    const publicClient = createPublicClient({
-      chain: StoryNetwork.Testnet,
-      transport: http(this.config.rpcUrl),
-    });
+    // Mark as needing initialization - will be done lazily
+    console.log('📝 Story Protocol client configured, will initialize on first use');
+  }
 
-    // Create account from private key
-    this.account = createWalletClient({
-      chain: StoryNetwork.Testnet,
-      transport: http(this.config.rpcUrl),
-      account: this.config.privateKey as `0x${string}`,
-    });
+  /**
+   * Ensure the client is initialized
+   */
+  private async ensureInitialized(): Promise<void> {
+    if (this.storyClient) {
+      return; // Already initialized
+    }
 
-    // Initialize Story Protocol client
-    this.storyClient = new StoryClient({
-      publicClient,
-      walletClient: this.account,
-      account: this.account.address,
-    });
+    try {
+      // Load dependencies dynamically
+      const { viem, storyProtocol } = await loadDependencies();
+      const { createPublicClient, createWalletClient, http } = viem;
+      const { StoryClient, aeneid } = storyProtocol;
 
-    console.log('✅ Real Story Protocol client initialized');
-    console.log(`   Network: Story TestNet (Chain ID: ${this.config.chainId})`);
-    console.log(`   Account: ${this.account.address}`);
-    console.log(`   IP Asset Registry: ${this.config.contracts.ipAssetRegistry}`);
+      // Debug: Log configuration
+      console.log('🔍 Story Protocol Real Client Config:');
+      console.log('   RPC URL:', this.config.rpcUrl);
+      console.log('   Chain ID:', this.config.chainId);
+      console.log('   Private Key exists:', !!this.config.privateKey);
+      console.log('   Contracts:', this.config.contracts);
+
+      // Validate RPC URL
+      if (!this.config.rpcUrl) {
+        throw new Error('RPC URL is not configured. Please set STORY_RPC_URL in your environment.');
+      }
+
+      // Initialize viem clients
+      const publicClient = createPublicClient({
+        chain: aeneid,
+        transport: http(this.config.rpcUrl),
+      });
+
+      // Create account from private key
+      this.account = createWalletClient({
+        chain: aeneid,
+        transport: http(this.config.rpcUrl),
+        account: this.config.privateKey as `0x${string}`,
+      });
+
+      // Initialize Story Protocol client
+      this.storyClient = new StoryClient({
+        publicClient,
+        walletClient: this.account,
+        account: this.account.address,
+      });
+
+      console.log('✅ Real Story Protocol client initialized');
+      console.log(`   Network: Story TestNet (Chain ID: ${this.config.chainId})`);
+      console.log(`   Account: ${this.account.address}`);
+      console.log(`   IP Asset Registry: ${this.config.contracts.ipAssetRegistry}`);
+    } catch (error) {
+      console.error('❌ Failed to initialize real Story Protocol client:', error);
+      throw error;
+    }
   }
 
   /**
@@ -140,6 +173,9 @@ export class RealStoryClient {
     owner: string
   ): Promise<string> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');
@@ -149,7 +185,7 @@ export class RealStoryClient {
       console.log(`🎭 Minting narrative token for shard: ${shardHash.slice(0, 8)}...`);
 
       // Load dependencies
-      const { storyProtocol } = loadDependencies();
+      const { storyProtocol } = await loadDependencies();
       const { IpMetadata } = storyProtocol;
 
       // Step 1: Define IP metadata
@@ -221,7 +257,7 @@ export class RealStoryClient {
   private async attachDefaultLicense(ipId: string): Promise<void> {
     try {
       // Load dependencies
-      const { storyProtocol } = loadDependencies();
+      const { storyProtocol } = await loadDependencies();
 
       // Define license terms
       const licenseTerms = await this.storyClient.license.pilTerms.create({
@@ -265,6 +301,9 @@ export class RealStoryClient {
     poolId: string
   ): Promise<string> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');
@@ -318,6 +357,9 @@ export class RealStoryClient {
    */
   async getToken(tokenId: string): Promise<NarrativeToken | null> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');
@@ -352,10 +394,36 @@ export class RealStoryClient {
   }
 
   /**
+   * Get all tokens
+   */
+  async getAllTokens(): Promise<NarrativeToken[]> {
+    try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return [];
+      }
+
+      // In a real implementation, you would query the blockchain for all tokens
+      // For now, return empty array
+      return [];
+    } catch (error) {
+      console.error('❌ Error getting all tokens:', error);
+      return [];
+    }
+  }
+
+  /**
    * Get token royalties
    */
   async getTokenRoyalties(tokenId: string): Promise<number> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');
@@ -375,6 +443,9 @@ export class RealStoryClient {
    */
   async transferToken(tokenId: string, to: string): Promise<boolean> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');
@@ -404,6 +475,9 @@ export class RealStoryClient {
     }
   ): Promise<string> {
     try {
+      // Ensure client is initialized
+      await this.ensureInitialized();
+
       // Check if client is initialized
       if (!this.storyClient) {
         console.log('🎭 Story Protocol client not initialized, using simulated mode');

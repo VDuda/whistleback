@@ -4,7 +4,16 @@ import { useTokens } from '@/hooks/useTokens';
 import { PhotoIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 export function TokenViewer() {
-  const { mintedTokens } = useTokens();
+  const { mintedTokens, isLoadingTokens } = useTokens();
+
+  if (isLoadingTokens) {
+    return (
+      <div className="bg-gray-800 rounded-lg p-8 text-center border border-gray-700">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+        <p className="text-gray-400">Loading tokens...</p>
+      </div>
+    );
+  }
 
   if (mintedTokens.length === 0) {
     return (

@@ -1,52 +1,37 @@
 import { useState, useCallback, useEffect } from 'react';
 import { NarrativeToken } from '@/types';
-import { storyClientPromise, isUsingRealTestNet } from '@/lib/story-protocol-config';
-
-// Fixed timestamps to avoid hydration mismatch
-const DEMO_TIMESTAMP = 1730800000000;
+import { isUsingRealTestNet } from '@/lib/story-protocol-config';
+import { useMode } from './useMode';
 
 export function useTokens() {
   const [isLoading, setIsLoading] = useState(false);
   const [mintedTokens, setMintedTokens] = useState<NarrativeToken[]>([]);
+  const [isLoadingTokens, setIsLoadingTokens] = useState(true);
+  const { mode } = useMode(); // Get mode from slider
 
-  // Initialize demo tokens on client-side only
-  useEffect(() => {
-    if (mintedTokens.length === 0) {
-      setMintedTokens([
-        // Pre-minted demo tokens for smooth demo flow
-        {
-          id: 'token-demo-001',
-          poolId: 'pool-1730800000000',
-          shardHash: '0xabc123def456',
-          metadata: {
-            name: 'Shell Company Evidence Shard #1',
-            attributes: {
-              type: 'evidence',
-              poolId: 'pool-1730800000000',
-              timestamp: DEMO_TIMESTAMP - 86400000,
-            },
-          },
-          royalties: 100,
-          owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
-        },
-        {
-          id: 'token-demo-002',
-          poolId: 'pool-1730800000000',
-          shardHash: '0x789xyz012abc',
-          metadata: {
-            name: 'Shell Company Evidence Shard #2',
-            attributes: {
-              type: 'evidence',
-              poolId: 'pool-1730800000000',
-              timestamp: DEMO_TIMESTAMP - 43200000,
-            },
-          },
-          royalties: 150,
-          owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
-        },
-      ]);
+  // Load tokens from API
+  const loadTokens = useCallback(async () => {
+    setIsLoadingTokens(true);
+    try {
+      const response = await fetch(`/api/story/tokens?mode=${mode}`);
+      const data = await response.json();
+
+      if (response.ok && data.tokens) {
+        setMintedTokens(data.tokens);
+      } else {
+        console.error('Failed to load tokens:', data.error);
+      }
+    } catch (error) {
+      console.error('Error loading tokens:', error);
+    } finally {
+      setIsLoadingTokens(false);
     }
-  }, [mintedTokens.length]);
+  }, [mode]);
+
+  // Load tokens on mount and when mode changes
+  useEffect(() => {
+    loadTokens();
+  }, [loadTokens]);
 
   const mintToken = useCallback(async (
     shardHash: string,
@@ -55,32 +40,41 @@ export function useTokens() {
   ) => {
     setIsLoading(true);
     try {
-      const storyClientInstance = await storyClientPromise;
-      const tokenId = await storyClientInstance.mintNarrative(
-        shardHash,
-        poolId,
-        {
-          name: `Shard-${shardHash.slice(0, 8)}`,
-          attributes: {
-            poolId,
-            type: 'evidence',
-            timestamp: Date.now(),
+      // Call server-side API route
+      const response = await fetch('/api/story/mint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode,
+          shardHash,
+          poolId,
+          owner,
+          metadata: {
+            name: `Shard-${shardHash.slice(0, 8)}`,
+            attributes: {
+              poolId,
+              type: 'evidence',
+              timestamp: Date.now(),
+            },
+            royalties: 100, // 1% royalty
           },
-          royalties: 100, // 1% royalty
-        },
-        owner
-      );
+        }),
+      });
 
-      const token = await storyClientInstance.getToken(tokenId);
-      if (token) {
-        setMintedTokens(prev => [...prev, token]);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to mint token');
       }
 
-      return tokenId;
+      // Reload tokens from API to get the newly minted token
+      await loadTokens();
+
+      return data.tokenId;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [mode, loadTokens]);
 
   const remixTokens = useCallback(async (
     parentTokenIds: string[],
@@ -89,41 +83,70 @@ export function useTokens() {
   ) => {
     setIsLoading(true);
     try {
-      const storyClientInstance = await storyClientPromise;
-      const masterTokenId = await storyClientInstance.remixTokens(
-        parentTokenIds,
-        metadata,
-        poolId
-      );
-      return masterTokenId;
+      // Call server-side API route
+      const response = await fetch('/api/story/remix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode,
+          parentTokenIds,
+          metadata,
+          poolId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to remix tokens');
+      }
+
+      return data.masterTokenId;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [mode]);
 
   const forkToken = useCallback(async (tokenId: string, metadata: any) => {
     setIsLoading(true);
     try {
-      const storyClientInstance = await storyClientPromise;
-      const forkTokenId = await storyClientInstance.forkToken(tokenId, metadata);
-      return forkTokenId;
+      // Call server-side API route
+      const response = await fetch('/api/story/fork', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode,
+          tokenId,
+          metadata,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fork token');
+      }
+
+      return data.forkTokenId;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [mode]);
 
   const getTokenRoyalties = useCallback(async (tokenId: string) => {
-    const storyClientInstance = await storyClientPromise;
-    const royalties = await storyClientInstance.getTokenRoyalties(tokenId);
-    return royalties;
+    // For demo purposes, return a mock royalty
+    // In production, you would call an API route to get real royalty data
+    return 100; // 1% royalty
   }, []);
 
   return {
     mintedTokens,
     isLoading,
+    isLoadingTokens,
     mintToken,
     remixTokens,
     forkToken,
     getTokenRoyalties,
+    refreshTokens: loadTokens,
   };
 }
