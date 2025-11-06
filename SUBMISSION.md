@@ -238,6 +238,13 @@ Built independently for LegalHack 2025.
 
 ---
 
+## 📚 Sources
+
+- [IRS Annual Report 2024 - Whistleblower Office](https://www.irs.gov/pub/irs-pdf/p5241.pdf)
+- [IRS Tax Gap Statistics](https://www.irs.gov/statistics/soi-tax-stats-tax-gap-statistics)
+
+---
+
 ## 🔗 Links
 
 - **Live Demo:** https://whistleback.vercel.app

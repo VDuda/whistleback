@@ -148,6 +148,11 @@ This is a **LegalHack 2025 MVP** running on TestNet:
 - Transactions processed on TestNet for demonstration
 - Forms and filing are for demo purposes
 
+## 📚 Sources
+
+- [IRS Annual Report 2024 - Whistleblower Office](https://www.irs.gov/pub/irs-pdf/p5241.pdf)
+- [IRS Tax Gap Statistics](https://www.irs.gov/statistics/soi-tax-stats-tax-gap statistics)
+
 ## 📄 License
 
 MIT License - Built with ❤️ for ethical exposés and tax justice.
