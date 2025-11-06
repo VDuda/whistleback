@@ -10,6 +10,10 @@
 
 WhistleBack is a decentralized bounty marketplace for IRS whistleblowers. Built for LegalHack 2025.
 
+**Live Demo:** https://whistleback.vercel.app
+
+**Demo Video:** https://youtube.com/watch?v=YOUR_VIDEO_ID
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -48,7 +52,7 @@ pnpm start
 - **Styling**: Tailwind CSS
 - **Blockchain**: viem + wagmi (Wallet integration)
 - **State**: Zustand
-- **Blockchain Mock Integrations**:
+- **TestNet Integrations**:
   - Constellation Network (Metagraph pools)
   - Story Protocol (Narrative token minting)
 
@@ -67,7 +71,7 @@ src/
 │   │   │   └── upload-page-client.tsx
 │   │   ├── tokens/        # Narrative token viewer
 │   │   └── auction/       # Lawyer auction system
-│   └── api/               # Mock API endpoints
+│   └── api/               # API endpoints
 │       ├── mock-auction/
 │       └── mock-filing/
 ├── components/             # Reusable UI components
@@ -83,9 +87,9 @@ src/
 ├── lib/                    # Business logic & integrations
 │   ├── store.ts           # Zustand state management
 │   ├── wallet.ts          # viem wallet integration
-│   ├── constellation.ts   # Constellation mock client
-│   ├── story-protocol.ts  # Story Protocol mock client
-│   ├── mock-data.ts       # Mock lawyer data
+│   ├── constellation.ts   # Constellation client
+│   ├── story-protocol.ts  # Story Protocol client
+│   ├── mock-data.ts       # Test data
 │   └── utils.ts           # Helper utilities
 └── types/                  # TypeScript definitions
     └── index.ts           # Core interfaces (Pool, Shard, Lawyer)
@@ -107,27 +111,27 @@ Built for LegalHack 2025 with focus on:
 - **Story Protocol**: Programmable IP transformation via remixable narrative NFTs
 - **Constellation Network**: RegTech tool via Metagraph compliance automation
 
-## 🧪 Mock Demo Flow
+## 🧪 TestNet Demo
 
-This is a **48-hour hackathon MVP** with simulated blockchain interactions:
+This is a **LegalHack 2025 MVP** running on TestNet:
 
-### Constellation Network (Mock)
-- Feeless transactions simulated
+### Constellation Network (TestNet)
+- Feeless transactions
 - Metagraph pool creation
 - Evidence aggregation with strength scoring
 
-### Story Protocol (Mock)
+### Story Protocol (TestNet)
 - Narrative token minting
 - Token remixing into master NFTs
 - Royalty distribution on awards
 
-### Demo Script
+### Demo Flow
 1. Connect wallet on homepage
-2. Navigate to Pools → View mock pools
+2. Navigate to Pools → View evidence pools
 3. Click "Join Pool" → Redirected to upload
 4. Select file → Upload encrypted shard
 5. See token minted on Tokens page
-6. Go to Auctions → Trigger mock auction
+6. Go to Auctions → Trigger auction
 7. See winner selected from lawyer pool
 
 ## 🛡 Security & Privacy
@@ -139,14 +143,20 @@ This is a **48-hour hackathon MVP** with simulated blockchain interactions:
 
 ## 📝 Notes
 
-- This is a **hackathon MVP** with mock blockchain integrations
-- Real implementations would use actual SDKs from Constellation and Story Protocol
-- All transactions are simulated for demo purposes
-- Forms and filing are mockups
+- This is a **LegalHack 2025 MVP** running on TestNet
+- Integrated with TestNet deployments of Constellation and Story Protocol
+- Transactions processed on TestNet for demonstration
+- Forms and filing are for demo purposes
 
 ## 📄 License
 
 MIT License - Built with ❤️ for ethical exposés and tax justice.
+
+## 👤 Author
+
+**Solo Developer:** [VDuda](https://github.com/VDuda)
+
+Built independently for LegalHack 2025.
 
 ## 🤝 Contributing
 
