@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { WalletConnect } from '@/components/WalletConnect';
+import { Header } from '@/components/Header';
 import {
   ShieldCheckIcon,
   CurrencyDollarIcon,
@@ -89,40 +89,7 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 border-b border-white/10 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 group cursor-pointer">
-              <div className="relative">
-                <ShieldCheckIcon className="w-10 h-10 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
-                <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  WhistleBack
-                </h1>
-                <p className="text-xs text-gray-400 -mt-1">Decentralized Bounty Marketplace</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/how-it-works"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                How It Works
-              </Link>
-              <Link
-                href="https://dorahacks.io/hackathon/legal-hack/detail"
-                target="_blank"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                LegalHack 2025
-              </Link>
-              <WalletConnect />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header currentPath="/" />
 
       {/* Hero Section */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -305,9 +272,11 @@ export default function Home() {
         {/* How It Works */}
         <div className="mb-24">
           <div className="text-center mb-16">
-            <h3 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              How It Works
-            </h3>
+            <Link href="/how-it-works">
+              <h3 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent hover:from-blue-400 hover:to-purple-400 transition-all duration-300 cursor-pointer">
+                How It Works
+              </h3>
+            </Link>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
@@ -338,7 +307,7 @@ export default function Home() {
               },
             ].map((item, index) => (
               <div key={index} className="relative">
-                <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full hover:border-white/30 transition-all duration-300">
+                <div className="bg-gradient-to-br from-white/2 to-white/[0.005] backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full hover:border-white/30 transition-all duration-300">
                   <div className={`text-6xl font-bold bg-gradient-to-r ${item.color} bg-clip-text text-transparent opacity-20 mb-4`}>
                     {item.step}
                   </div>

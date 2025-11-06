@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Header } from '@/components/Header';
 import {
   ShieldCheckIcon,
   DocumentTextIcon,
@@ -120,45 +121,7 @@ export default function HowItWorksPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
-      <nav className="border-b border-white/10 backdrop-blur-lg sticky top-0 z-50 bg-black/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 group cursor-pointer">
-              <div className="relative">
-                <ShieldCheckIcon className="w-10 h-10 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
-                <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  WhistleBack
-                </h1>
-                <p className="text-xs text-gray-400 -mt-1">Decentralized Bounty Marketplace</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                Home
-              </Link>
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="https://dorahacks.io/hackathon/legal-hack/detail"
-                target="_blank"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white transition"
-              >
-                LegalHack 2025
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header currentPath="/how-it-works" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Header */}
