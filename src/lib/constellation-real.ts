@@ -59,12 +59,14 @@ export class RealConstellationClient {
       metagraphId: process.env.CONSTELLATION_METAGRAPH_ID || '',
     };
 
-    if (!this.config.privateKey) {
-      console.warn('⚠️  CONSTELLATION_PRIVATE_KEY not configured');
-      console.warn('   Evidence storage will use mock mode');
-    } else {
-      this.initializeWallet();
-    }
+    // In real production implementation, you would validate the private key here
+    // For now, we run in simulated mode since the dag4 integration is not fully implemented
+    // In client-side Next.js, process.env is not available, so we skip this check
+    // The private key would be handled on the backend in a real implementation
+    console.log('🎭 Constellation client initialized (simulated real mode)');
+
+    // Initialize wallet (simulated for now)
+    this.initializeWallet();
   }
 
   /**
@@ -368,6 +370,3 @@ export class RealConstellationClient {
     };
   }
 }
-
-// Export singleton instance
-export const realConstellationClient = new RealConstellationClient();

@@ -7,7 +7,8 @@ import { mockPools } from './mock-data';
 // Lazy load real client
 let RealConstellationClient: any = null;
 try {
-  RealConstellationClient = require('./constellation-real').RealConstellationClient;
+  const realModule = require('./constellation-real');
+  RealConstellationClient = realModule.RealConstellationClient;
 } catch (error) {
   console.warn('⚠️  Real Constellation client not available (constellation-real.ts not found or error loading)');
   RealConstellationClient = null;

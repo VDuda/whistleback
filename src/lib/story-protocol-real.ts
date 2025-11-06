@@ -82,8 +82,13 @@ export class RealStoryClient {
     };
 
     // Validate configuration
+    // In client-side Next.js, process.env is not available, so we can't validate here
+    // In a real production app, private keys would be handled on the backend
     if (!this.config.privateKey) {
-      throw new Error('STORY_PRIVATE_KEY not configured. Set it in your .env file.');
+      console.log('⚠️  STORY_PRIVATE_KEY not configured (client-side)');
+      console.log('   Running in simulated real mode');
+      // Don't initialize clients - just mark as uninitialized
+      return;
     }
 
     // Initialize viem clients
@@ -135,6 +140,12 @@ export class RealStoryClient {
     owner: string
   ): Promise<string> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return `MOCK_TOKEN_${Date.now()}_${shardHash.slice(0, 8)}`;
+      }
+
       console.log(`🎭 Minting narrative token for shard: ${shardHash.slice(0, 8)}...`);
 
       // Load dependencies
@@ -254,6 +265,12 @@ export class RealStoryClient {
     poolId: string
   ): Promise<string> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return `MOCK_MASTER_${Date.now()}`;
+      }
+
       console.log(`🎨 Remixing ${parentTokenIds.length} tokens into master NFT`);
 
       // Create a derivative IP from parent tokens
@@ -301,6 +318,12 @@ export class RealStoryClient {
    */
   async getToken(tokenId: string): Promise<NarrativeToken | null> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return null;
+      }
+
       // Fetch IP Asset data
       const ipAsset = await this.storyClient.ipAsset.getIpAsset(tokenId);
 
@@ -333,6 +356,12 @@ export class RealStoryClient {
    */
   async getTokenRoyalties(tokenId: string): Promise<number> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return 0;
+      }
+
       const ipAsset = await this.storyClient.ipAsset.getIpAsset(tokenId);
       return ipAsset?.royalty?.royaltyStack?.reduce((sum: number, r: any) => sum + r.percentage, 0) || 0;
     } catch (error) {
@@ -346,6 +375,12 @@ export class RealStoryClient {
    */
   async transferToken(tokenId: string, to: string): Promise<boolean> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return false;
+      }
+
       await this.storyClient.ipAsset.transfer({
         ipId: tokenId,
         to,
@@ -369,6 +404,12 @@ export class RealStoryClient {
     }
   ): Promise<string> {
     try {
+      // Check if client is initialized
+      if (!this.storyClient) {
+        console.log('🎭 Story Protocol client not initialized, using simulated mode');
+        return `MOCK_FORK_${Date.now()}`;
+      }
+
       console.log(`🔀 Forking token ${tokenId} - reason: ${metadata.reason}`);
 
       // Create a derivative IP with dispute information
@@ -426,16 +467,16 @@ export class RealStoryClient {
    * Get client status
    */
   getStatus() {
+    const initialized = !!this.storyClient;
     return {
       network: 'Story TestNet',
       chainId: STORY_CONFIG.chainId,
       rpcUrl: STORY_CONFIG.rpcUrl,
       account: this.account?.address,
-      connected: !!this.account,
+      connected: initialized,
       contracts: STORY_CONTRACTS,
+      initialized,
     };
   }
 }
 
-// Export instance
-export const realStoryClient = new RealStoryClient();

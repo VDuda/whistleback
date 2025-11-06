@@ -90,7 +90,7 @@ function getStoryClient() {
       // Use eval to bypass webpack's static analysis
       const dynamicRequire = eval('require');
       const realModule = dynamicRequire('./story-protocol-real');
-      const RealStoryClient = realModule.RealStoryClient;
+      const { RealStoryClient } = realModule;
 
       if (!RealStoryClient) {
         throw new Error('RealStoryClient not exported');
