@@ -1,10 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { WalletConnect } from '@/components/WalletConnect';
-import {
-  ShieldCheckIcon,
-} from '@heroicons/react/24/outline';
 
 interface HeaderProps {
   showWallet?: boolean;
@@ -18,9 +16,16 @@ export function Header({ showWallet = true, currentPath = '/' }: HeaderProps) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-            <div className="relative">
-              <ShieldCheckIcon className="w-10 h-10 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
+            <div className="relative w-10 h-10 group-hover:scale-110 transition-transform duration-300">
+              <Image
+                src="/logo.jpg"
+                alt="WhistleBack Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+                priority
+              />
+              <div className="absolute inset-0 bg-blue-400/20 rounded-lg blur-xl group-hover:blur-2xl transition-all duration-300" />
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
