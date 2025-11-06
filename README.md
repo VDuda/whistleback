@@ -29,6 +29,91 @@ pnpm install
 pnpm dev
 ```
 
+## 💼 What Users Access
+
+WhistleBack provides a **seamless Web3 experience** with minimal wallet friction:
+
+### As a User, You Get:
+
+✅ **Evidence Pools** - Browse and join public pools for tax fraud cases
+✅ **Anonymous Uploads** - Submit evidence without revealing identity
+✅ **Narrative Tokens** - Receive NFTs for your evidence contributions
+✅ **Real-Time Pool Strength** - Watch evidence aggregate in real-time
+✅ **Lawyer Auctions** - Automatic bidding when evidence threshold met
+✅ **Award Tracking** - Monitor IRS bounty progress and award distribution
+✅ **Token Portfolio** - View all your narrative tokens and royalties
+
+### How It Works (User View):
+
+1. **Connect MetaMask** (your only wallet needed!)
+2. **Browse Pools** - View active tax fraud evidence pools
+3. **Upload Evidence** - Drag & drop documents, logs, communications
+4. **Receive Token** - NFT minted on Story Protocol automatically
+5. **Track Progress** - See pool strength increase, auction trigger
+6. **Claim Award** - Receive share when IRS processes case
+
+### Wallet Requirements:
+
+**Users primarily use MetaMask for Story Protocol, with Constellation handled invisibly by the backend.**
+
+🟢 **MetaMask** (Required for Story Protocol)
+- Connects to Story TestNet
+- Signs token minting transactions
+- Receives narrative NFTs
+
+🔴 **Stargazer** (Optional advanced feature, not required!)
+- Not needed for basic use
+- Backend handles Constellation interactions
+- Future power user option
+
+**This gives you simple UX AND powerful backend - best of both worlds!** 🚀
+
+## 🏗️ Architecture & Network Relationship
+
+WhistleBack uses a **dual-blockchain architecture** that combines the best of both networks:
+
+### The Relationship
+
+```
+Story NFT (0xNFT_001)
+  └── metadata.hash: "0xabc123..."
+       └─→ Points to ←┐
+                     │
+  Constellation Evidence (DAG_Tx_789)
+    └── hash: "0xabc123..." ←┘
+```
+
+**They're complementary, not sequential!** 🎉
+
+### What Each Network Does
+
+**Story Protocol (Ethereum L2)**
+- ✅ NFT ownership and minting
+- ✅ Token remixing and forking
+- ✅ Royalty distribution
+- ✅ License management
+- ✅ MetaMask support
+
+**Constellation Network (DAG)**
+- ✅ Feeless evidence storage
+- ✅ Large file encryption
+- ✅ Custom metagraph logic
+- ✅ High-performance DAG consensus
+- ✅ Backend handling (invisible to users)
+
+### How They Link
+
+The **SHA-256 hash** of your evidence file is the bridge:
+1. Evidence uploaded → Constellation stores encrypted data
+2. Hash generated → Story Protocol mints NFT with hash in metadata
+3. Both reference the same hash → Cryptographic link established
+4. Verification possible → Anyone can confirm NFT matches evidence
+
+This design gives you:
+- **Story**: Full Ethereum ecosystem (NFTs, royalties, remix)
+- **Constellation**: Scalable, feeless data storage
+- **Best of both worlds!** 🌟
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Build for Production
