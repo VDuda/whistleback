@@ -271,12 +271,19 @@ export default function Home() {
 
         {/* How It Works */}
         <div className="mb-24">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <Link href="/how-it-works">
               <h3 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent hover:from-blue-400 hover:to-purple-400 transition-all duration-300 cursor-pointer">
                 How It Works
               </h3>
             </Link>
+            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+              A quick overview of our process.{' '}
+              <Link href="/how-it-works" className="text-blue-400 hover:text-blue-300 font-medium underline decoration-blue-400/50 hover:decoration-blue-300 transition">
+                Read the complete 6-step guide
+              </Link>{' '}
+              with FAQ and lawyer network details.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
@@ -307,12 +314,12 @@ export default function Home() {
               },
             ].map((item, index) => (
               <div key={index} className="relative">
-                <div className="bg-gradient-to-br from-white/2 to-white/[0.005] backdrop-blur-sm border border-white/10 rounded-2xl p-6 h-full hover:border-white/30 transition-all duration-300">
-                  <div className={`text-6xl font-bold bg-gradient-to-r ${item.color} bg-clip-text text-transparent opacity-20 mb-4`}>
+                <div className="bg-gradient-to-br from-white/10 to-white/[0.03] backdrop-blur-sm border border-white/20 rounded-2xl p-6 h-full hover:border-white/40 transition-all duration-300 hover:bg-white/15">
+                  <div className={`text-6xl font-bold bg-gradient-to-r ${item.color} bg-clip-text text-transparent opacity-90 mb-4 drop-shadow-lg`}>
                     {item.step}
                   </div>
                   <h4 className="text-xl font-bold text-white mb-3">{item.title}</h4>
-                  <p className="text-gray-400 text-sm">{item.description}</p>
+                  <p className="text-gray-300 text-sm">{item.description}</p>
                 </div>
                 {index < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 text-gray-600">
