@@ -1,6 +1,7 @@
 'use client';
 
 import { TokenViewer } from '@/components/TokenViewer';
+import { StoryProtocolStatus } from '@/components/StoryProtocolStatus';
 
 export default function TokensPage() {
   return (
@@ -11,6 +12,8 @@ export default function TokensPage() {
           Story Protocol NFTs representing your evidence contributions
         </p>
       </div>
+
+      <StoryProtocolStatus />
 
       <TokenViewer />
 

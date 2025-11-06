@@ -29,6 +29,7 @@ export interface Pool {
   createdAt: number;
   tokens?: string[]; // Story Protocol token addresses
   winner?: string; // Winning lawyer
+  constellationTxId?: string; // Constellation network transaction ID
 }
 
 export interface Lawyer {
