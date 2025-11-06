@@ -17,13 +17,13 @@
 
 **[Screen]** Homepage (already loaded)
 **[Voiceover]**
-> "73% of whistleblower claims get rejected. $688 billion in unpaid taxes goes unreported annually. Why? Because individuals face maximum risk with weak, isolated evidence."
+> "73% of whistleblower claims get rejected. But $123.5 million in awards were paid in 2024 alone. Why? Because individuals face maximum risk with weak, isolated evidence."
 
 **[Action]**
 - Point to stats cards on homepage:
   - "$474M" (IRS Collections)
   - "73%" (Claims Rejected)
-  - "$688B" (Annual Tax Gap - IRS 2023)
+  - "$123.5M" (Awards Paid in 2024)
 
 **[Pause 1 second]**
 
@@ -258,7 +258,7 @@ Story Protocol + Constellation Network
 
 If judges want shorter version, use this condensed script:
 
-**[0:00-0:15]** - Show 73% rejection stat, $688B annual tax gap
+**[0:00-0:15]** - Show 73% rejection stat, $123.5M awards paid
 **[0:15-0:30]** - Click "Explore Pools", show pool browsing
 **[0:30-0:45]** - Upload evidence, show token minting
 **[0:45-1:00]** - Trigger auction, show lawyer selection
