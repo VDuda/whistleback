@@ -42,8 +42,10 @@ function getConstellationMode(): 'mock' | 'real' {
     return 'mock';
   }
 
-  // Server-side: Use env var, but default to 'mock'
-  return CONSTELLATION_CONFIG.mode;
+  // Server-side: ALWAYS default to 'mock' for safety
+  // The slider controls everything - server should never force real mode
+  console.log('🔒 Server-side: defaulting to mock mode (use slider to enable real)');
+  return 'mock';
 }
 
 // Simulated Metagraph pool operations
