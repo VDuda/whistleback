@@ -1,9 +1,6 @@
 # WhistleBack MVP
 
 ![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=flat-square&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-38B2AC?style=flat-square&logo=tailwind-css)
 ![Status](https://img.shields.io/badge/Status-LegalHack%202025%20Submission-success?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 [![Built for Story Protocol](https://img.shields.io/badge/Story%20Protocol-Programmable%20IP-purple?style=flat-square)](https://storyprotocol.xyz)
