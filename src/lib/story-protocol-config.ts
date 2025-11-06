@@ -64,7 +64,7 @@ function getCurrentMode(): 'mock' | 'real' {
  *
  * NOTE: The real client is loaded dynamically to avoid build errors
  */
-function getStoryClient() {
+async function getStoryClient() {
   const currentMode = getCurrentMode();
 
   if (currentMode === 'real') {
@@ -72,7 +72,7 @@ function getStoryClient() {
     if (typeof window === 'undefined') {
       // Server-side: check if real client can be loaded
       try {
-        const realModule = require('./story-protocol-real');
+        const realModule = await import('./story-protocol-real');
         const RealStoryClient = realModule.RealStoryClient;
         if (RealStoryClient) {
           console.log('🚀 Using REAL Story Protocol TestNet integration (server-side)');
@@ -88,8 +88,8 @@ function getStoryClient() {
     try {
       // Dynamic import to prevent webpack from bundling at compile time
       // Use eval to bypass webpack's static analysis
-      const dynamicRequire = eval('require');
-      const realModule = dynamicRequire('./story-protocol-real');
+      const dynamicImport = eval('import');
+      const realModule = await dynamicImport('./story-protocol-real');
       const { RealStoryClient } = realModule;
 
       if (!RealStoryClient) {
@@ -125,17 +125,21 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export const storyClient = {
-  get instance() {
-    const currentMode = getCurrentMode();
-    // Always check if mode has changed
-    if (!_storyClient || _cachedMode !== currentMode) {
-      _storyClient = getStoryClient();
-      _cachedMode = currentMode;
-    }
-    return _storyClient;
+// Export client as a promise that resolves to the singleton instance
+export const storyClientPromise = (async () => {
+  const currentMode = getCurrentMode();
+  // Always check if mode has changed
+  if (!_storyClient || _cachedMode !== currentMode) {
+    _storyClient = await getStoryClient();
+    _cachedMode = currentMode;
   }
-};
+  return _storyClient;
+})();
+
+// Also export named function for getting the instance
+export async function getStoryClientInstance() {
+  return storyClientPromise;
+}
 
 /**
  * Check if using real TestNet

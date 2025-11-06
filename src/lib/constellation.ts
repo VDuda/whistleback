@@ -4,15 +4,7 @@
 import { Pool, Shard, Company } from '@/types';
 import { mockPools } from './mock-data';
 
-// Lazy load real client
-let RealConstellationClient: any = null;
-try {
-  const realModule = require('./constellation-real');
-  RealConstellationClient = realModule.RealConstellationClient;
-} catch (error) {
-  console.warn('⚠️  Real Constellation client not available (constellation-real.ts not found or error loading)');
-  RealConstellationClient = null;
-}
+// Real client will be loaded dynamically
 
 export const CONSTELLATION_CONFIG = {
   // Set to 'real' to use Constellation TestNet
@@ -52,17 +44,31 @@ function getConstellationMode(): 'mock' | 'real' {
 // Simulated Metagraph pool operations
 export class ConstellationClient {
   private pools: Map<string, Pool> = new Map();
-
   private realClient: any = null;
+  private initialized: boolean = false;
 
   constructor() {
+    // Initialize lazily
+  }
+
+  private async ensureInitialized() {
+    if (this.initialized) return;
+
     const currentMode = getConstellationMode();
 
     // Decide which client to use
-    if (currentMode === 'real' && RealConstellationClient) {
+    if (currentMode === 'real') {
       try {
-        this.realClient = new RealConstellationClient();
-        console.log('🚀 Using REAL Constellation TestNet integration');
+        // Dynamic import to load TypeScript module
+        const realModule = await import('./constellation-real');
+        const RealConstellationClient = realModule.RealConstellationClient;
+
+        if (RealConstellationClient) {
+          this.realClient = new RealConstellationClient();
+          console.log('🚀 Using REAL Constellation TestNet integration');
+          this.initialized = true;
+          return;
+        }
       } catch (error) {
         console.error('❌ Failed to initialize real Constellation client:', error);
         console.log('🎭 Falling back to MOCK Constellation client');
@@ -70,16 +76,17 @@ export class ConstellationClient {
     }
 
     // If no real client, use mock
-    if (!this.realClient) {
-      console.log('🎭 Initializing Constellation client (Mock)');
-      mockPools.forEach(pool => {
-        this.pools.set(pool.id, pool);
-      });
-      console.log(`Loaded ${mockPools.length} mock pools into Constellation client`);
-    }
+    console.log('🎭 Initializing Constellation client (Mock)');
+    mockPools.forEach(pool => {
+      this.pools.set(pool.id, pool);
+    });
+    console.log(`Loaded ${mockPools.length} mock pools into Constellation client`);
+    this.initialized = true;
   }
 
   async createPool(poolId: string, creator: string, company: Company, name: string, description: string, threshold: number = 75): Promise<string> {
+    await this.ensureInitialized();
+
     // Use real client if available
     if (this.realClient) {
       return this.realClient.createPool(poolId, creator, company, name, description, threshold);
@@ -106,6 +113,7 @@ export class ConstellationClient {
   }
 
   async addShard(poolId: string, shard: Omit<Shard, 'id'>): Promise<string> {
+    await this.ensureInitialized();
     // Use real client if available
     if (this.realClient) {
       return this.realClient.addShard(poolId, shard);
@@ -131,6 +139,7 @@ export class ConstellationClient {
 
   async getPoolState(poolId: string): Promise<Pool> {
     // Use real client if available
+    await this.ensureInitialized();
     if (this.realClient) {
       return this.realClient.getPoolState(poolId);
     }
@@ -147,6 +156,7 @@ export class ConstellationClient {
 
   async submitTransaction(data: any): Promise<string> {
     // Use real client if available
+    await this.ensureInitialized();
     if (this.realClient) {
       return this.realClient.submitTransaction(data);
     }
@@ -157,6 +167,8 @@ export class ConstellationClient {
   }
 
   async queryNetwork(query: string): Promise<any> {
+    await this.ensureInitialized();
+
     // Use real client if available
     if (this.realClient) {
       return this.realClient.queryNetwork(query);

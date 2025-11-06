@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { NarrativeToken } from '@/types';
-import { storyClient, isUsingRealTestNet } from '@/lib/story-protocol-config';
+import { storyClientPromise, isUsingRealTestNet } from '@/lib/story-protocol-config';
 
 // Fixed timestamps to avoid hydration mismatch
 const DEMO_TIMESTAMP = 1730800000000;
@@ -55,7 +55,8 @@ export function useTokens() {
   ) => {
     setIsLoading(true);
     try {
-      const tokenId = await storyClient.instance.mintNarrative(
+      const storyClientInstance = await storyClientPromise;
+      const tokenId = await storyClientInstance.mintNarrative(
         shardHash,
         poolId,
         {
@@ -70,7 +71,7 @@ export function useTokens() {
         owner
       );
 
-      const token = await storyClient.instance.getToken(tokenId);
+      const token = await storyClientInstance.getToken(tokenId);
       if (token) {
         setMintedTokens(prev => [...prev, token]);
       }
@@ -88,7 +89,8 @@ export function useTokens() {
   ) => {
     setIsLoading(true);
     try {
-      const masterTokenId = await storyClient.instance.remixTokens(
+      const storyClientInstance = await storyClientPromise;
+      const masterTokenId = await storyClientInstance.remixTokens(
         parentTokenIds,
         metadata,
         poolId
@@ -102,7 +104,8 @@ export function useTokens() {
   const forkToken = useCallback(async (tokenId: string, metadata: any) => {
     setIsLoading(true);
     try {
-      const forkTokenId = await storyClient.instance.forkToken(tokenId, metadata);
+      const storyClientInstance = await storyClientPromise;
+      const forkTokenId = await storyClientInstance.forkToken(tokenId, metadata);
       return forkTokenId;
     } finally {
       setIsLoading(false);
@@ -110,7 +113,8 @@ export function useTokens() {
   }, []);
 
   const getTokenRoyalties = useCallback(async (tokenId: string) => {
-    const royalties = await storyClient.instance.getTokenRoyalties(tokenId);
+    const storyClientInstance = await storyClientPromise;
+    const royalties = await storyClientInstance.getTokenRoyalties(tokenId);
     return royalties;
   }, []);
 
