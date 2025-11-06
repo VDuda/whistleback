@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Pool, Shard } from '@/types';
+import { Pool, Shard, Company } from '@/types';
 import { useStore } from '@/lib/store';
 import { constellationClient } from '@/lib/constellation';
 
@@ -7,20 +7,21 @@ export function usePools() {
   const { pools, addPool, updatePool, addShard } = useStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  const createPool = useCallback(async (name: string, description: string, creator: string) => {
+  const createPool = useCallback(async (name: string, description: string, creator: string, company: Company, threshold: number = 75) => {
     setIsLoading(true);
     try {
       const poolId = `pool-${Date.now()}`;
-      const id = await constellationClient.createPool(poolId, creator);
+      const id = await constellationClient.createPool(poolId, creator, company, name, description, threshold);
 
       const newPool: Pool = {
         id,
         name,
         description,
+        company,
         creator,
         shards: [],
         strength: 0,
-        threshold: 75,
+        threshold,
         status: 'active',
         createdAt: Date.now(),
       };

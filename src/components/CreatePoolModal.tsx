@@ -62,7 +62,7 @@ export function CreatePoolModal({ isOpen, onClose }: CreatePoolModalProps) {
       );
 
       // Create pool object and add to store
-      await createPool(formData.poolName, formData.description, address);
+      await createPool(formData.poolName, formData.description, address, company, formData.threshold);
 
       // Reset form
       setFormData({
