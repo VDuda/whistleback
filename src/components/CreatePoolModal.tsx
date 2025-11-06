@@ -17,7 +17,7 @@ interface CreatePoolModalProps {
 }
 
 export function CreatePoolModal({ isOpen, onClose }: CreatePoolModalProps) {
-  const { addPool } = usePools();
+  const { createPool } = usePools();
   const { address } = useStore();
 
   const [formData, setFormData] = useState({
@@ -50,6 +50,7 @@ export function CreatePoolModal({ isOpen, onClose }: CreatePoolModalProps) {
         industry: formData.industry,
       };
 
+      // Update createPool call to include company
       const poolId = `pool-${Date.now()}`;
       await constellationClient.createPool(
         poolId,
@@ -60,19 +61,8 @@ export function CreatePoolModal({ isOpen, onClose }: CreatePoolModalProps) {
         formData.threshold
       );
 
-      // Add to local store
-      addPool({
-        id: poolId,
-        name: formData.poolName,
-        description: formData.description,
-        company,
-        creator: address,
-        shards: [],
-        strength: 0,
-        threshold: formData.threshold,
-        status: 'active',
-        createdAt: Date.now(),
-      });
+      // Create pool object and add to store
+      await createPool(formData.poolName, formData.description, address);
 
       // Reset form
       setFormData({
