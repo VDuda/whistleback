@@ -163,6 +163,21 @@ export default function Home() {
               <div className="text-gray-400 text-sm">Annual Tax Gap</div>
             </div>
           </div>
+
+          {/* Source Citation */}
+          <div className="text-center mt-4">
+            <p className="text-xs text-gray-500">
+              Data source:{' '}
+              <a
+                href="https://www.irs.gov/pub/irs-pdf/p5241.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                IRS Annual Report 2024 - Whistleblower Office
+              </a>
+            </p>
+          </div>
         </div>
 
         {/* Features */}
