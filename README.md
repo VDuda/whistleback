@@ -12,7 +12,7 @@ WhistleBack is a decentralized bounty marketplace for IRS whistleblowers. Built 
 
 **Live Demo:** https://whistleback.vercel.app
 
-**Demo Video:** https://youtube.com/watch?v=YOUR_VIDEO_ID
+**Demo Video:** https://go.diginomad.xyz/legal-hack-demo-video
 
 ## 🚀 Quick Start
 

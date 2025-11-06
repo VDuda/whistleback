@@ -8,7 +8,7 @@
 
 **Live Demo:** https://whistleback.vercel.app
 
-**Demo Video:** https://youtube.com/watch?v=YOUR_VIDEO_ID
+**Demo Video:** https://go.diginomad.xyz/legal-hack-demo-video
 
 ---
 
@@ -37,7 +37,7 @@ WhistleBack enables **anonymous collaboration** by allowing multiple contributor
 
 ## 🎬 Demo Video
 
-**Demo Video:** https://youtube.com/watch?v=YOUR_VIDEO_ID
+**Demo Video:** https://go.diginomad.xyz/legal-hack-demo-video
 
 *3-minute walkthrough showing complete user flow: connect wallet → browse pools → upload evidence → view tokens → trigger auction*
 
