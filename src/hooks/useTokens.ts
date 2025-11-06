@@ -4,7 +4,39 @@ import { storyClient } from '@/lib/story-protocol';
 
 export function useTokens() {
   const [isLoading, setIsLoading] = useState(false);
-  const [mintedTokens, setMintedTokens] = useState<NarrativeToken[]>([]);
+  const [mintedTokens, setMintedTokens] = useState<NarrativeToken[]>([
+    // Pre-minted demo tokens for smooth demo flow
+    {
+      id: 'token-demo-001',
+      poolId: 'pool-1730800000000',
+      shardHash: '0xabc123def456',
+      metadata: {
+        name: 'Shell Company Evidence Shard #1',
+        attributes: {
+          type: 'evidence',
+          poolId: 'pool-1730800000000',
+          timestamp: Date.now() - 86400000,
+        },
+      },
+      royalties: 100,
+      owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
+    },
+    {
+      id: 'token-demo-002',
+      poolId: 'pool-1730800000000',
+      shardHash: '0x789xyz012abc',
+      metadata: {
+        name: 'Shell Company Evidence Shard #2',
+        attributes: {
+          type: 'evidence',
+          poolId: 'pool-1730800000000',
+          timestamp: Date.now() - 43200000,
+        },
+      },
+      royalties: 150,
+      owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
+    },
+  ]);
 
   const mintToken = useCallback(async (
     shardHash: string,

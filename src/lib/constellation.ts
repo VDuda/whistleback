@@ -2,6 +2,7 @@
 // In production, this would use @constellation-labs/sdk
 
 import { Pool, Shard, Company } from '@/types';
+import { mockPools } from './mock-data';
 
 // Simulated Metagraph pool operations
 export class ConstellationClient {
@@ -10,6 +11,10 @@ export class ConstellationClient {
   constructor() {
     // Initialize with mock pools
     console.log('Initializing Constellation client (Mock)');
+    mockPools.forEach(pool => {
+      this.pools.set(pool.id, pool);
+    });
+    console.log(`Loaded ${mockPools.length} mock pools into Constellation client`);
   }
 
   async createPool(poolId: string, creator: string, company: Company, name: string, description: string, threshold: number = 75): Promise<string> {
