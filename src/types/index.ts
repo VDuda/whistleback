@@ -1,3 +1,10 @@
+export interface Company {
+  name: string;
+  ein: string; // Employer Identification Number
+  headquarters: string; // HQ location
+  industry: string;
+}
+
 export interface Shard {
   id: string;
   hash: string;
@@ -13,6 +20,7 @@ export interface Pool {
   id: string;
   name: string;
   description: string;
+  company: Company;
   creator: string;
   shards: Shard[];
   strength: number; // 0-100

@@ -1,7 +1,7 @@
 // Mock Constellation Network Integration for MVP
 // In production, this would use @constellation-labs/sdk
 
-import { Pool, Shard } from '@/types';
+import { Pool, Shard, Company } from '@/types';
 
 // Simulated Metagraph pool operations
 export class ConstellationClient {
@@ -12,18 +12,19 @@ export class ConstellationClient {
     console.log('Initializing Constellation client (Mock)');
   }
 
-  async createPool(poolId: string, creator: string): Promise<string> {
+  async createPool(poolId: string, creator: string, company: Company, name: string, description: string, threshold: number = 75): Promise<string> {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const pool: Pool = {
       id: poolId,
-      name: `Pool ${poolId}`,
-      description: 'Created on Constellation Network',
+      name,
+      description,
+      company,
       creator,
       shards: [],
       strength: 0,
-      threshold: 75,
+      threshold,
       status: 'active',
       createdAt: Date.now(),
     };

@@ -71,7 +71,27 @@ export function PoolCard({ pool }: PoolCardProps) {
                 {pool.name}
               </h3>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">{pool.description}</p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-3">{pool.description}</p>
+            {pool.company && (
+              <div className="flex flex-wrap gap-3 text-xs">
+                <div className="flex items-center gap-1.5 px-2 py-1.5 bg-white/5 rounded-lg border border-white/10">
+                  <span className="text-gray-400">Company:</span>
+                  <span className="text-white font-medium">{pool.company.name}</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1.5 bg-white/5 rounded-lg border border-white/10">
+                  <span className="text-gray-400">EIN:</span>
+                  <span className="text-white font-mono font-medium">{pool.company.ein}</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1.5 bg-white/5 rounded-lg border border-white/10">
+                  <span className="text-gray-400">HQ:</span>
+                  <span className="text-white font-medium">{pool.company.headquarters}</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1.5 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
+                  <span className="text-gray-400">Industry:</span>
+                  <span className="text-blue-300 font-medium">{pool.company.industry}</span>
+                </div>
+              </div>
+            )}
           </div>
           <div className={`px-4 py-2 bg-gradient-to-r ${colors.bg} ${colors.border} border rounded-full`}>
             <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wide`}>
