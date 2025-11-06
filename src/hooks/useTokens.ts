@@ -1,42 +1,52 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { NarrativeToken } from '@/types';
 import { storyClient, isUsingRealTestNet } from '@/lib/story-protocol-config';
 
+// Fixed timestamps to avoid hydration mismatch
+const DEMO_TIMESTAMP = 1730800000000;
+
 export function useTokens() {
   const [isLoading, setIsLoading] = useState(false);
-  const [mintedTokens, setMintedTokens] = useState<NarrativeToken[]>([
-    // Pre-minted demo tokens for smooth demo flow
-    {
-      id: 'token-demo-001',
-      poolId: 'pool-1730800000000',
-      shardHash: '0xabc123def456',
-      metadata: {
-        name: 'Shell Company Evidence Shard #1',
-        attributes: {
-          type: 'evidence',
+  const [mintedTokens, setMintedTokens] = useState<NarrativeToken[]>([]);
+
+  // Initialize demo tokens on client-side only
+  useEffect(() => {
+    if (mintedTokens.length === 0) {
+      setMintedTokens([
+        // Pre-minted demo tokens for smooth demo flow
+        {
+          id: 'token-demo-001',
           poolId: 'pool-1730800000000',
-          timestamp: Date.now() - 86400000,
+          shardHash: '0xabc123def456',
+          metadata: {
+            name: 'Shell Company Evidence Shard #1',
+            attributes: {
+              type: 'evidence',
+              poolId: 'pool-1730800000000',
+              timestamp: DEMO_TIMESTAMP - 86400000,
+            },
+          },
+          royalties: 100,
+          owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
         },
-      },
-      royalties: 100,
-      owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
-    },
-    {
-      id: 'token-demo-002',
-      poolId: 'pool-1730800000000',
-      shardHash: '0x789xyz012abc',
-      metadata: {
-        name: 'Shell Company Evidence Shard #2',
-        attributes: {
-          type: 'evidence',
+        {
+          id: 'token-demo-002',
           poolId: 'pool-1730800000000',
-          timestamp: Date.now() - 43200000,
+          shardHash: '0x789xyz012abc',
+          metadata: {
+            name: 'Shell Company Evidence Shard #2',
+            attributes: {
+              type: 'evidence',
+              poolId: 'pool-1730800000000',
+              timestamp: DEMO_TIMESTAMP - 43200000,
+            },
+          },
+          royalties: 150,
+          owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
         },
-      },
-      royalties: 150,
-      owner: '0x742d35Cc6634C0532925a3b8D3AC2B73aBc9C2',
-    },
-  ]);
+      ]);
+    }
+  }, [mintedTokens.length]);
 
   const mintToken = useCallback(async (
     shardHash: string,

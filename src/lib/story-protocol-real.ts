@@ -5,10 +5,10 @@
  * Replace the mock client in story-protocol.ts with this implementation.
  *
  * Setup:
- * 1. Install: npm install @story-protocol/sdk viem
+ * 1. Install: pnpm install @story-protocol/core-sdk viem
  * 2. Copy .env.testnet.example to .env.testnet
  * 3. Add your private key and configure environment
- * 4. Set USE_STORY_TESTNET=true to use this implementation
+ * 4. Set STORY_MODE=real to use this implementation
  */
 
 // Dynamic imports to prevent webpack bundling
@@ -19,9 +19,9 @@ function loadDependencies() {
   if (!viem || !storyProtocol) {
     try {
       viem = require('viem');
-      storyProtocol = require('@story-protocol/sdk');
+      storyProtocol = require('@story-protocol/core-sdk');
     } catch (error) {
-      throw new Error('Story Protocol SDK not installed. Run: npm install @story-protocol/sdk viem');
+      throw new Error('Story Protocol SDK not installed. Run: pnpm install @story-protocol/core-sdk viem');
     }
   }
   return { viem, storyProtocol };

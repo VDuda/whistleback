@@ -74,7 +74,7 @@ function getStoryClient() {
       return new RealStoryClient();
     } catch (error) {
       console.error('❌ Real Story Protocol client not available');
-      console.error('   Install: npm install @story-protocol/sdk viem');
+      console.error('   Install: pnpm install @story-protocol/core-sdk viem');
       console.error('   Or set STORY_MODE=mock to use mock client');
       console.log('🎭 Falling back to MOCK Story Protocol integration');
       return new MockStoryClient();
