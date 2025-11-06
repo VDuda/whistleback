@@ -5,6 +5,35 @@ import { useStore } from '@/lib/store';
 export function useWallet() {
   const { address, isConnected, setAddress, setConnected } = useStore();
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      const sessionId = localStorage.getItem('wb_session_id');
+      if (sessionId) {
+        console.log('🔍 [WALLET] Found existing session, checking wallet connection...');
+        // Reconstruct session without requiring new signature
+        try {
+          const wallet = await connectWallet();
+          if (wallet) {
+            console.log('✅ [WALLET] Restored session without new signature');
+            setAddress(wallet.address);
+            setConnected(true);
+          } else {
+            // Clear invalid session
+            localStorage.removeItem('wb_session_id');
+          }
+        } catch (error) {
+          console.log('⚠️ [WALLET] No wallet connected, cleared invalid session');
+          localStorage.removeItem('wb_session_id');
+        }
+      }
+      setIsInitialized(true);
+    };
+
+    checkExistingSession();
+  }, [setAddress, setConnected]);
 
   const connect = useCallback(async () => {
     setIsConnecting(true);
@@ -17,8 +46,10 @@ export function useWallet() {
         console.log('🔌 [WALLET] Setting address and connected to true');
         setAddress(wallet.address);
         setConnected(true);
-        // Sign anonymous identity proof
-        await signMessage(`WhistleBack anonymous session: ${Date.now()}`);
+        // Sign anonymous identity proof (use session-based approach)
+        const sessionId = localStorage.getItem('wb_session_id') || crypto.randomUUID();
+        localStorage.setItem('wb_session_id', sessionId);
+        await signMessage(`WhistleBack anonymous session: ${sessionId}`);
         // State updates only happen after successful signature
         console.log('✅ [WALLET] Wallet connected and signed successfully');
       } else {
@@ -39,8 +70,10 @@ export function useWallet() {
   }, [setAddress, setConnected, address, isConnected]);
 
   const disconnect = useCallback(() => {
+    console.log('🔌 [WALLET] Disconnecting wallet, clearing session');
     setAddress(null);
     setConnected(false);
+    localStorage.removeItem('wb_session_id');
   }, [setAddress, setConnected]);
 
   // Auto-connect if wallet was previously connected

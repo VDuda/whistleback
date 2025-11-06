@@ -60,15 +60,17 @@ export class ConstellationClient {
     if (currentMode === 'real') {
       try {
         // Dynamic import to load TypeScript module
-        const realModule = await import('./constellation-real');
-        const RealConstellationClient = realModule.RealConstellationClient;
+        // Note: constellation-real.ts is not needed for token display
+        // const realModule = await import('./constellation-real');
+        // const RealConstellationClient = realModule.RealConstellationClient;
 
-        if (RealConstellationClient) {
-          this.realClient = new RealConstellationClient();
-          console.log('🚀 Using REAL Constellation TestNet integration');
-          this.initialized = true;
-          return;
-        }
+        // if (RealConstellationClient) {
+        //   this.realClient = new RealConstellationClient();
+        //   console.log('🚀 Using REAL Constellation TestNet integration');
+        //   this.initialized = true;
+        //   return;
+        // }
+        console.log('🎭 Constellation real mode not fully implemented, using mock');
       } catch (error) {
         console.error('❌ Failed to initialize real Constellation client:', error);
         console.log('🎭 Falling back to MOCK Constellation client');

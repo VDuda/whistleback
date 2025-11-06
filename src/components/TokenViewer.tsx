@@ -2,9 +2,37 @@
 
 import { useTokens } from '@/hooks/useTokens';
 import { PhotoIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 
 export function TokenViewer() {
   const { mintedTokens, isLoadingTokens } = useTokens();
+  const [error, setError] = useState<string | null>(null);
+
+  console.log('[VIEWER] ⚡ Component render - mintedTokens:', mintedTokens, 'isLoading:', isLoadingTokens);
+  console.log('[VIEWER] Tokens array length:', Array.isArray(mintedTokens) ? mintedTokens.length : 'NOT_AN_ARRAY');
+  console.log('[VIEWER] First token:', mintedTokens?.[0] || 'NONE');
+
+  useEffect(() => {
+    console.log('[VIEWER] 🎯 useEffect running, tokens length:', mintedTokens?.length || 0);
+    if (mintedTokens && mintedTokens.length > 0) {
+      console.log('[VIEWER] Tokens to render:', JSON.stringify(mintedTokens, null, 2));
+    }
+  }, [mintedTokens]);
+
+  if (error) {
+    return (
+      <div className="bg-red-900/20 border border-red-500 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-red-400 mb-2">Error displaying tokens</h3>
+        <p className="text-red-300 text-sm">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Reload Page
+        </button>
+      </div>
+    );
+  }
 
   if (isLoadingTokens) {
     return (
@@ -15,7 +43,10 @@ export function TokenViewer() {
     );
   }
 
-  if (mintedTokens.length === 0) {
+  // Safety check: ensure mintedTokens is an array
+  const tokensArray = Array.isArray(mintedTokens) ? mintedTokens : [];
+
+  if (tokensArray.length === 0) {
     return (
       <div className="bg-gray-800 rounded-lg p-8 text-center border border-gray-700">
         <PhotoIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -30,7 +61,7 @@ export function TokenViewer() {
       <h3 className="text-xl font-semibold text-white mb-4">Your Narrative Tokens</h3>
 
       <div className="grid gap-4">
-        {mintedTokens.map((token) => (
+        {tokensArray.map((token) => (
           <div
             key={token.id}
             className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-blue-500 transition"

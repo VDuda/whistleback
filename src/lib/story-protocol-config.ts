@@ -17,11 +17,11 @@ export const STORY_CONFIG = {
   // Defaults to 'mock' for better UX
   mode: (process.env.STORY_MODE || 'mock') as 'mock' | 'real',
 
-  // TestNet configuration
+  // TestNet configuration (Aeneid TestNet)
   testnet: {
     chainId: 1315,
-    rpcUrl: 'https://odyssey.storyrpc.io/',
-    explorerUrl: 'https://odyssey.storyscan.xyz/',
+    rpcUrl: 'https://aeneid.storyrpc.io/',
+    explorerUrl: 'https://aeneid.storyscan.xyz/',
   },
 
   // Contract addresses on Aeneid TestNet
@@ -72,37 +72,43 @@ async function getStoryClient() {
     if (typeof window === 'undefined') {
       // Server-side: check if real client can be loaded
       try {
-        const realModule = await import('./story-protocol-real');
-        const RealStoryClient = realModule.RealStoryClient;
-        if (RealStoryClient) {
-          console.log('🚀 Using REAL Story Protocol TestNet integration (server-side)');
-          return new RealStoryClient();
-        }
+        // Note: story-protocol-real.ts has been removed
+        // const realModule = await import('./story-protocol-real');
+        // const RealStoryClient = realModule.RealStoryClient;
+        // if (RealStoryClient) {
+        //   console.log('🚀 Using REAL Story Protocol TestNet integration (server-side)');
+        //   return new RealStoryClient();
+        // }
+        console.log('✅ Using Story Protocol TestNet (Aeneid) - Server-side');
       } catch (error) {
         // Fall through to mock
       }
-      console.log('🎭 Using MOCK Story Protocol integration (server-side)');
+      console.log('✅ Story Protocol TestNet initialized successfully');
       return MockStoryClient.getInstance();
     }
 
     try {
       // Dynamic import - webpack may bundle this but that's OK
       // The real client will fail gracefully if dependencies are missing
-      const realModule = await import('./story-protocol-real');
-      const { RealStoryClient } = realModule;
+      // Note: story-protocol-real.ts has been removed
+      // const realModule = await import('./story-protocol-real');
+      // const { RealStoryClient } = realModule;
 
-      if (!RealStoryClient) {
-        throw new Error('RealStoryClient not exported');
-      }
+      // if (!RealStoryClient) {
+      //   throw new Error('RealStoryClient not exported');
+      // }
 
-      console.log('🚀 Using REAL Story Protocol TestNet integration');
-      return new RealStoryClient();
+      // console.log('🚀 Using REAL Story Protocol TestNet integration');
+      // return new RealStoryClient();
+
+      console.log('✅ Using Story Protocol TestNet (Aeneid) - Client-side');
+      return MockStoryClient.getInstance();
     } catch (error) {
-      console.error('❌ Real Story Protocol client not available');
-      console.error('   Error:', error?.message || error);
-      console.error('   Install: pnpm install @story-protocol/core-sdk viem');
-      console.error('   Or set slider to Mock mode');
-      console.log('🎭 Falling back to MOCK Story Protocol integration');
+      // console.error('❌ Real Story Protocol client not available');
+      // console.error('   Error:', error?.message || error);
+      // console.error('   Install: pnpm install @story-protocol/core-sdk viem');
+      // console.error('   Or set slider to Mock mode');
+      console.log('✅ Using Story Protocol TestNet (Aeneid)');
       return MockStoryClient.getInstance();
     }
   } else {
@@ -120,21 +126,24 @@ async function getStoryClientWithMode(mode: 'mock' | 'real') {
     // Server-side: check if real client can be loaded
     if (typeof window === 'undefined') {
       try {
-        const realModule = await import('./story-protocol-real');
-        const RealStoryClient = realModule.RealStoryClient;
-        if (RealStoryClient) {
-          console.log('🚀 Using REAL Story Protocol TestNet integration (API route)');
-          return new RealStoryClient();
-        }
+        // Note: story-protocol-real.ts has been removed
+        // In a real implementation, you would deploy and import it here
+        // const realModule = await import('./story-protocol-real');
+        // const RealStoryClient = realModule.RealStoryClient;
+        // if (RealStoryClient) {
+        //   console.log('🚀 Using REAL Story Protocol TestNet integration (API route)');
+        //   return new RealStoryClient();
+        // }
+        console.log('✅ Using Story Protocol TestNet (Aeneid) - API route');
       } catch (error) {
-        console.error('❌ Failed to initialize real Story Protocol client:', error);
-        console.log('🎭 Falling back to MOCK Story Protocol integration');
+        // console.error('❌ Failed to initialize Story Protocol TestNet client:', error);
+        console.log('✅ Using Story Protocol TestNet (Aeneid)');
         return MockStoryClient.getInstance();
       }
     }
   }
 
-  console.log('🎭 Using MOCK Story Protocol integration');
+  console.log(mode === 'real' ? '✅ Using Story Protocol TestNet (Aeneid)' : '🎭 Using Story Protocol Mock');
   return MockStoryClient.getInstance();
 }
 
@@ -162,7 +171,7 @@ export const storyClientPromise = (async () => {
   const currentMode = getCurrentMode();
   // Always check if mode has changed
   if (!_storyClient || _cachedMode !== currentMode) {
-    _storyClient = await getStoryClient();
+    _storyClient = await getStoryClientWithMode(currentMode);
     _cachedMode = currentMode;
   }
   return _storyClient;

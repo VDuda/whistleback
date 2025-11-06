@@ -9,15 +9,23 @@ export function useTokens() {
   const [isLoadingTokens, setIsLoadingTokens] = useState(true);
   const { mode } = useMode(); // Get mode from slider
 
+  console.log('[TOKENS] Hook rendering, mode:', mode, 'current tokens length:', mintedTokens.length);
+
   // Load tokens from API
   const loadTokens = useCallback(async () => {
+    console.log('[TOKENS] loadTokens called, mode:', mode);
     setIsLoadingTokens(true);
     try {
       const response = await fetch(`/api/story/tokens?mode=${mode}`);
       const data = await response.json();
 
+      console.log('[TOKENS] Full API response:', JSON.stringify(data, null, 2));
+      console.log('[TOKENS] Mode:', mode, 'Token count:', data.tokens?.length || 0);
+
       if (response.ok && data.tokens) {
+        console.log('[TOKENS] Setting tokens:', data.tokens);
         setMintedTokens(data.tokens);
+        console.log('[TOKENS] State updated. New mintedTokens length:', data.tokens.length);
       } else {
         console.error('Failed to load tokens:', data.error);
       }
@@ -25,13 +33,15 @@ export function useTokens() {
       console.error('Error loading tokens:', error);
     } finally {
       setIsLoadingTokens(false);
+      console.log('[TOKENS] loadTokens complete, isLoadingTokens set to false');
     }
-  }, [mode]);
+  }, [mode]); // Only depend on mode, not the fetch logic
 
   // Load tokens on mount and when mode changes
   useEffect(() => {
+    console.log('[TOKENS] ⚡ useEffect triggered, mode:', mode);
     loadTokens();
-  }, [loadTokens]);
+  }, [mode, loadTokens]); // Add loadTokens to dependencies to ensure stability
 
   const mintToken = useCallback(async (
     shardHash: string,

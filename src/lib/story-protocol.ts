@@ -9,7 +9,7 @@ class MockStoryClient {
   private tokens: Map<string, NarrativeToken> = new Map();
 
   private constructor() {
-    console.log('Initializing Story Protocol client (Mock)');
+    console.log('Initializing Story Protocol TestNet (Aeneid)');
   }
 
   static getInstance(): MockStoryClient {

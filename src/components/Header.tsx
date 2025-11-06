@@ -38,8 +38,8 @@ export function Header({ showWallet = true, currentPath = '/' }: HeaderProps) {
 
           {/* Navigation */}
           <div className="flex items-center gap-4">
-            {/* Mode Toggle */}
-            <ModeToggle />
+            {/* Mode Toggle - Hidden, defaulting to Real mode */}
+            {/* <ModeToggle /> */}
 
             <div className="h-6 w-px bg-white/10" />
 
