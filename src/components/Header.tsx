@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { WalletConnect } from '@/components/WalletConnect';
+import { ModeToggle } from '@/components/ModeToggle';
 
 interface HeaderProps {
   showWallet?: boolean;
@@ -36,7 +37,12 @@ export function Header({ showWallet = true, currentPath = '/' }: HeaderProps) {
           </Link>
 
           {/* Navigation */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            {/* Mode Toggle */}
+            <ModeToggle />
+
+            <div className="h-6 w-px bg-white/10" />
+
             <Link
               href="/"
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${

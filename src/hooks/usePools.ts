@@ -11,7 +11,7 @@ export function usePools() {
     setIsLoading(true);
     try {
       const poolId = `pool-${Date.now()}`;
-      const id = await constellationClient.createPool(poolId, creator, company, name, description, threshold);
+      const id = await constellationClient.instance.createPool(poolId, creator, company, name, description, threshold);
 
       const newPool: Pool = {
         id,
@@ -34,7 +34,7 @@ export function usePools() {
   }, [addPool]);
 
   const joinPool = useCallback(async (poolId: string) => {
-    const pool = await constellationClient.getPoolState(poolId);
+    const pool = await constellationClient.instance.getPoolState(poolId);
     if (pool) {
       updatePool(poolId, pool);
     }
@@ -66,7 +66,7 @@ export function usePools() {
         credibilityScore: 0,
       };
 
-      const shardId = await constellationClient.addShard(poolId, shard);
+      const shardId = await constellationClient.instance.addShard(poolId, shard);
 
       const fullShard: Shard = {
         ...shard,
@@ -82,7 +82,7 @@ export function usePools() {
   }, [addShard]);
 
   const refreshPool = useCallback(async (poolId: string) => {
-    const pool = await constellationClient.getPoolState(poolId);
+    const pool = await constellationClient.instance.getPoolState(poolId);
     if (pool) {
       updatePool(poolId, pool);
     }

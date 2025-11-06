@@ -52,7 +52,7 @@ export function CreatePoolModal({ isOpen, onClose }: CreatePoolModalProps) {
 
       // Update createPool call to include company
       const poolId = `pool-${Date.now()}`;
-      await constellationClient.createPool(
+      await constellationClient.instance.createPool(
         poolId,
         address,
         company,

@@ -25,6 +25,27 @@ export const CONSTELLATION_CONFIG = {
   },
 };
 
+/**
+ * Get the current mode for Constellation
+ * Priority: localStorage (slider) > env var
+ * Default: 'mock' (safe default)
+ */
+function getConstellationMode(): 'mock' | 'real' {
+  // Client-side: Check localStorage first (controlled by slider)
+  if (typeof window !== 'undefined') {
+    const savedMode = localStorage.getItem('whistleback-mode') as 'mock' | 'real' | null;
+    // Only use 'real' if explicitly saved in localStorage
+    if (savedMode === 'real') {
+      return 'real';
+    }
+    // Any other value (null, 'mock', undefined) defaults to 'mock'
+    return 'mock';
+  }
+
+  // Server-side: Use env var, but default to 'mock'
+  return CONSTELLATION_CONFIG.mode;
+}
+
 // Simulated Metagraph pool operations
 export class ConstellationClient {
   private pools: Map<string, Pool> = new Map();
@@ -32,8 +53,10 @@ export class ConstellationClient {
   private realClient: any = null;
 
   constructor() {
+    const currentMode = getConstellationMode();
+
     // Decide which client to use
-    if (CONSTELLATION_CONFIG.mode === 'real' && RealConstellationClient) {
+    if (currentMode === 'real' && RealConstellationClient) {
       try {
         this.realClient = new RealConstellationClient();
         console.log('🚀 Using REAL Constellation TestNet integration');
@@ -158,4 +181,27 @@ export class ConstellationClient {
   }
 }
 
-export const constellationClient = new ConstellationClient();
+// Export as singleton with mode change detection
+let _constellationClient: ConstellationClient | null = null;
+let _cachedConstellationMode: string = '';
+
+// Listen for mode changes and invalidate cache
+if (typeof window !== 'undefined') {
+  window.addEventListener('modeChanged', () => {
+    console.log('🔄 Constellation client mode changed, invalidating cache');
+    _constellationClient = null;
+    _cachedConstellationMode = '';
+  });
+}
+
+export const constellationClient = {
+  get instance() {
+    const currentMode = getConstellationMode();
+    // Recreate client if mode has changed
+    if (!_constellationClient || _cachedConstellationMode !== currentMode) {
+      _constellationClient = new ConstellationClient();
+      _cachedConstellationMode = currentMode;
+    }
+    return _constellationClient;
+  }
+};

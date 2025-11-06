@@ -14,7 +14,8 @@ import { StoryClient as MockStoryClient } from './story-protocol';
 export const STORY_CONFIG = {
   // Set to 'real' to use Story Protocol TestNet
   // Set to 'mock' to use mock implementation
-  mode: (process.env.STORY_MODE || 'real') as 'mock' | 'real',
+  // Defaults to 'mock' for better UX
+  mode: (process.env.STORY_MODE || 'mock') as 'mock' | 'real',
 
   // TestNet configuration
   testnet: {
@@ -36,12 +37,35 @@ export const STORY_CONFIG = {
 };
 
 /**
+ * Get the current mode (checks localStorage on client, env on server)
+ * Priority: localStorage (slider) > env var
+ * Default: 'mock' (safe default)
+ */
+function getCurrentMode(): 'mock' | 'real' {
+  // Client-side: Check localStorage first (controlled by slider)
+  if (typeof window !== 'undefined') {
+    const savedMode = localStorage.getItem('whistleback-mode') as 'mock' | 'real' | null;
+    // Only use 'real' if explicitly saved in localStorage
+    if (savedMode === 'real') {
+      return 'real';
+    }
+    // Any other value (null, 'mock', undefined) defaults to 'mock'
+    return 'mock';
+  }
+
+  // Server-side: Use env var, but default to 'mock'
+  return STORY_CONFIG.mode;
+}
+
+/**
  * Get the appropriate Story client based on configuration
  *
  * NOTE: The real client is loaded dynamically to avoid build errors
  */
 function getStoryClient() {
-  if (STORY_CONFIG.mode === 'real') {
+  const currentMode = getCurrentMode();
+
+  if (currentMode === 'real') {
     // Try to load real client on both client and server side
     if (typeof window === 'undefined') {
       // Server-side: check if real client can be loaded
@@ -88,11 +112,24 @@ function getStoryClient() {
 // Export a lazy-loaded singleton instance
 // This prevents the real client from being loaded at import time
 let _storyClient: any = null;
+let _cachedMode: string = '';
+
+// Listen for mode changes and invalidate cache
+if (typeof window !== 'undefined') {
+  window.addEventListener('modeChanged', () => {
+    console.log('🔄 Story client mode changed, invalidating cache');
+    _storyClient = null;
+    _cachedMode = '';
+  });
+}
 
 export const storyClient = {
   get instance() {
-    if (!_storyClient) {
+    const currentMode = getCurrentMode();
+    // Always check if mode has changed
+    if (!_storyClient || _cachedMode !== currentMode) {
       _storyClient = getStoryClient();
+      _cachedMode = currentMode;
     }
     return _storyClient;
   }

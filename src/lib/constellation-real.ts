@@ -39,6 +39,18 @@ export class RealConstellationClient {
   private account: any = null; // dag4 account
   private connected: boolean = false;
 
+  /**
+   * Build L1 URL for API calls
+   * Includes metagraph ID if configured
+   */
+  private getL1Url(endpoint: string = ''): string {
+    const baseUrl = this.config.l1Url;
+    if (this.config.metagraphId) {
+      return `${baseUrl}/data-application/${this.config.metagraphId}/${endpoint}`;
+    }
+    return `${baseUrl}/${endpoint}`;
+  }
+
   constructor() {
     this.config = {
       l0Url: process.env.CONSTELLATION_L0_URL || 'https://l0-lb-testnet.constellationnetwork.io',
@@ -114,11 +126,15 @@ export class RealConstellationClient {
       //
       // const proof = await this.generateProof(message);
       // const response = await axios.post(
-      //   `${this.config.l1Url}/data`,
+      //   this.getL1Url('data'),
       //   { value: message, proofs: [proof] }
       // );
       //
       // return response.data.txId;
+
+      // Note: If CONSTELLATION_METAGRAPH_ID is set, the URL will be:
+      // https://l0-lb-testnet.constellationnetwork.io/data-application/{metagraphId}/data
+      // If blank, it uses: https://l0-lb-testnet.constellationnetwork.io/data
 
       // Simulate transaction delay
       await new Promise(resolve => setTimeout(resolve, 500));
