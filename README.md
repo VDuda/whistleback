@@ -1,5 +1,14 @@
 # WhistleBack MVP
 
+![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-38B2AC?style=flat-square&logo=tailwind-css)
+![Status](https://img.shields.io/badge/Status-LegalHack%202025%20Submission-success?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+[![Built for Story Protocol](https://img.shields.io/badge/Story%20Protocol-Programmable%20IP-purple?style=flat-square)](https://storyprotocol.xyz)
+[![Built on Constellation](https://img.shields.io/badge/Constellation-Hypergraph%20L0-blueviolet?style=flat-square)](https://constellationnetwork.io)
+
 **Back the whistle—build the bust.**
 
 WhistleBack is a decentralized bounty marketplace for IRS whistleblowers. Built for LegalHack 2025.
@@ -50,32 +59,39 @@ pnpm start
 
 ```
 src/
-├── app/                    # Next.js app router
-│   ├── dashboard/          # Dashboard pages
-│   │   ├── pools/         # Evidence pools
-│   │   ├── upload/        # Upload evidence
-│   │   ├── tokens/        # View narrative tokens
-│   │   └── auction/       # Lawyer auctions
-│   ├── api/               # Mock API routes
+├── app/                    # Next.js App Router
+│   ├── page.tsx           # Landing page with particle animation
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Landing page
+│   ├── how-it-works/      # Comprehensive guide page
+│   ├── dashboard/         # Dashboard routes
+│   │   ├── layout.tsx     # Dashboard layout with navigation
+│   │   ├── pools/         # Evidence pool browser
+│   │   ├── upload/        # File upload interface
+│   │   │   └── upload-page-client.tsx
+│   │   ├── tokens/        # Narrative token viewer
+│   │   └── auction/       # Lawyer auction system
+│   └── api/               # Mock API endpoints
+│       ├── mock-auction/
+│       └── mock-filing/
 ├── components/             # Reusable UI components
-│   ├── WalletConnect.tsx
-│   ├── PoolCard.tsx
-│   ├── ShardUploader.tsx
-│   └── TokenViewer.tsx
+│   ├── Header.tsx         # Shared navigation header
+│   ├── WalletConnect.tsx  # MetaMask wallet connection
+│   ├── PoolCard.tsx       # Pool display component
+│   ├── ShardUploader.tsx  # File upload component
+│   └── TokenViewer.tsx    # NFT gallery display
 ├── hooks/                  # Custom React hooks
-│   ├── useWallet.ts
-│   ├── usePools.ts
-│   └── useTokens.ts
-├── lib/                    # Utility libraries
+│   ├── useWallet.ts       # Wallet connection logic
+│   ├── usePools.ts        # Pool management
+│   └── useTokens.ts       # Token operations
+├── lib/                    # Business logic & integrations
 │   ├── store.ts           # Zustand state management
-│   ├── wallet.ts          # Wallet integration
+│   ├── wallet.ts          # viem wallet integration
 │   ├── constellation.ts   # Constellation mock client
 │   ├── story-protocol.ts  # Story Protocol mock client
-│   └── utils.ts           # Helper functions
+│   ├── mock-data.ts       # Mock lawyer data
+│   └── utils.ts           # Helper utilities
 └── types/                  # TypeScript definitions
-    └── index.ts
+    └── index.ts           # Core interfaces (Pool, Shard, Lawyer)
 ```
 
 ## 🔧 How It Works
