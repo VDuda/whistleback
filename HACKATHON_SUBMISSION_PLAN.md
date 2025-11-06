@@ -369,7 +369,7 @@ whistleback/
 ### For All Judges
 - Lead with **problem statement** - 73% rejection rate
 - Show **solo execution** - Built entirely by one developer in 48 hours
-- Emphasize **market potential** - $123.5M awards paid in 2024 alone
+- Emphasize **market potential** - 26% of proceeds go to whistleblowers
 - End with **vision** - New asset class for whistleblowing
 
 ---
